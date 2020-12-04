@@ -1,0 +1,19 @@
+body {
+    height: 100vh;
+    /* mobile viewport bug fix */
+    height: -webkit-fill-available;
+}
+  
+html {
+    height: 100%;
+    height: -webkit-fill-available;
+}
+
+#root {
+    position: fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    overflow: auto;
+}
