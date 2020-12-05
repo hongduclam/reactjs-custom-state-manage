@@ -1,4 +1,4 @@
-import React, {useEffect, useContext} from 'react';
+import React, {useEffect, useContext, useCallback} from 'react';
 import {withStyles, makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,12 +7,15 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import Link from '@material-ui/core/Link';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import Chip from '@material-ui/core/Chip';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Skeleton from '@material-ui/lab/Skeleton';
+import EditIcon from '@material-ui/icons/Edit';
+
 import {StoreContext} from "./store/StoreContext";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -46,14 +49,21 @@ const DocumentStatus = ({status}) => {
   />
 };
 
+
+
 function DocumentList() {
   const {state, actions} = useContext(StoreContext);
   const {documents} = state;
-
   const classes = useStyles();
+
   useEffect(() => {
     actions.getDocuments();
   }, []);
+
+  const handleOpenDialog = (document) => {
+    actions.showDialog(document)
+  }
+
   if (!documents || !documents.length) {
     return <Skeleton animation="wave"/>;
   }
@@ -61,33 +71,43 @@ function DocumentList() {
     <Container fixed>
       <Box m={2}>
         <Typography variant="h5" component="h5" gutterBottom>
-          Documents
+          <Button variant="contained" color="primary" onClick={() => handleOpenDialog()}>
+            Add Document
+          </Button>
         </Typography>
+
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="customized table">
             <TableHead>
               <TableRow>
                 <StyledTableCell>Name</StyledTableCell>
-                <StyledTableCell align="left">Link</StyledTableCell>
                 <StyledTableCell align="left">Status</StyledTableCell>
-                <StyledTableCell align="left">Date</StyledTableCell>
+                <StyledTableCell align="left">Actions</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {documents.map((document) => (
+              {documents
+                .map((document) => (
                 <StyledTableRow key={document.id}>
-                  <StyledTableCell align="left">{document.name}</StyledTableCell>
                   <StyledTableCell align="left">
                     {
-                      document.link && <Link href={'#'} color="primary">
-                        {document.link}
-                      </Link>
+                      <a href={document.link} target={'blank'}>
+                        {document.name}
+                      </a>
                     }
                   </StyledTableCell>
                   <StyledTableCell align="left">
                     <DocumentStatus status={document.status}/>
                   </StyledTableCell>
-                  <StyledTableCell align="left">{document.statusDateTime}</StyledTableCell>
+                  <StyledTableCell align="left">
+                    <IconButton
+                      onClick={() => handleOpenDialog(document)}
+                      color="primary"
+                      size="small"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>

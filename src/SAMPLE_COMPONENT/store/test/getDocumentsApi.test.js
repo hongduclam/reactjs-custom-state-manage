@@ -1,4 +1,4 @@
-import getDocumentsApi from '../getDocumentsApi';
+import apis from '../getDocumentsApi';
 
 describe('getDocumentsApi', () => {
   beforeEach(() => {
@@ -6,7 +6,7 @@ describe('getDocumentsApi', () => {
   });
 
   it('should return correctly', () => {
-    const actual = getDocumentsApi();
+    const actual = apis();
     expect(actual).toBeDefined();
   });
 });
