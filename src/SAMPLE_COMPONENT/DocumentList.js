@@ -1,4 +1,4 @@
-import React, {useEffect, useContext, useCallback} from 'react';
+import React, {useEffect, useContext, useMemo} from 'react';
 import {withStyles, makeStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -49,12 +49,68 @@ const DocumentStatus = ({status}) => {
   />
 };
 
+const DocumentListMemo = function ({documents, handleOpenDialog}) {
+  const classes = useStyles();
+  return useMemo(function () {
+    if (!documents || !documents.length) {
+      return <Skeleton animation="wave"/>;
+    }
+    return (
+      <Container fixed>
+        <Box m={2}>
+          <Typography variant="h5" component="h5" gutterBottom>
+            <Button variant="contained" color="primary" onClick={() => handleOpenDialog()}>
+              Add Document
+            </Button>
+          </Typography>
 
+          <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Name</StyledTableCell>
+                  <StyledTableCell align="left">Status</StyledTableCell>
+                  <StyledTableCell align="left">Actions</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {documents
+                  .map((document) => (
+                    <StyledTableRow key={document.id}>
+                      <StyledTableCell align="left">
+                        {
+                          <a href={document.link} target={'blank'}>
+                            {document.name}
+                          </a>
+                        }
+                      </StyledTableCell>
+                      <StyledTableCell align="left">
+                        <DocumentStatus status={document.status}/>
+                      </StyledTableCell>
+                      <StyledTableCell align="left">
+                        <IconButton
+                          onClick={() => handleOpenDialog(document)}
+                          color="primary"
+                          size="small"
+                        >
+                          <EditIcon/>
+                        </IconButton>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+        </Box>
+      </Container>
+    );
+  }, [documents, handleOpenDialog, classes])
+}
 
 function DocumentList() {
   const {state, actions} = useContext(StoreContext);
   const {documents} = state;
-  const classes = useStyles();
 
   useEffect(() => {
     actions.getDocuments();
@@ -63,62 +119,11 @@ function DocumentList() {
   const handleOpenDialog = (document) => {
     actions.showDialog(document)
   }
+  // use memo to prevent render when useContext change
+  return <DocumentListMemo documents={documents} handleOpenDialog={handleOpenDialog}/>
 
-  if (!documents || !documents.length) {
-    return <Skeleton animation="wave"/>;
-  }
-  return (
-    <Container fixed>
-      <Box m={2}>
-        <Typography variant="h5" component="h5" gutterBottom>
-          <Button variant="contained" color="primary" onClick={() => handleOpenDialog()}>
-            Add Document
-          </Button>
-        </Typography>
-
-        <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Name</StyledTableCell>
-                <StyledTableCell align="left">Status</StyledTableCell>
-                <StyledTableCell align="left">Actions</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {documents
-                .map((document) => (
-                <StyledTableRow key={document.id}>
-                  <StyledTableCell align="left">
-                    {
-                      <a href={document.link} target={'blank'}>
-                        {document.name}
-                      </a>
-                    }
-                  </StyledTableCell>
-                  <StyledTableCell align="left">
-                    <DocumentStatus status={document.status}/>
-                  </StyledTableCell>
-                  <StyledTableCell align="left">
-                    <IconButton
-                      onClick={() => handleOpenDialog(document)}
-                      color="primary"
-                      size="small"
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-      </Box>
-    </Container>
-
-  );
 }
+
 
 DocumentList.propTypes = {};
 DocumentList.defaultProps = {};
