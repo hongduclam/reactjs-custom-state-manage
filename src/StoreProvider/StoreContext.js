@@ -1,9 +1,7 @@
 import React, { createContext, useReducer } from 'react';
-import { useActions } from '../SAMPLE_COMPONENT/store/actions';
-
 const StoreContext = createContext({});
 
-const StoreProvider = ({ children, reducer, middleware, initialState }) => {
+const StoreProvider = ({ children, reducer, actions, middleware, initialState }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const applyMiddleware = dispatch => action => {
     middleware(dispatch, action) || dispatch(action)
@@ -13,10 +11,10 @@ const StoreProvider = ({ children, reducer, middleware, initialState }) => {
     enhancedDispatch = applyMiddleware(dispatch);
   }
   // Attach middleware to capture every dispatch
-  const actions = useActions(state, enhancedDispatch);
+  const enhancedActions = actions(state, enhancedDispatch);
   return (
     <StoreContext.Provider
-      value={{ state, dispatch: enhancedDispatch, actions }}
+      value={{ state, dispatch: enhancedDispatch, actions: enhancedActions }}
     >
       {children}
     </StoreContext.Provider>
