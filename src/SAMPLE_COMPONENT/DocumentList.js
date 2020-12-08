@@ -16,7 +16,7 @@ import Box from '@material-ui/core/Box';
 import Skeleton from '@material-ui/lab/Skeleton';
 import EditIcon from '@material-ui/icons/Edit';
 
-import {StoreContext} from "./store/StoreContext";
+import {StoreContext} from "../StoreProvider/StoreContext";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {

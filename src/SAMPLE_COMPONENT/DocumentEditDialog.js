@@ -6,7 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import { makeStyles } from '@material-ui/core/styles';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {StoreContext} from "./store/StoreContext";
+import {StoreContext} from "../StoreProvider/StoreContext";
 
 
 const useStyles = makeStyles((theme) => ({

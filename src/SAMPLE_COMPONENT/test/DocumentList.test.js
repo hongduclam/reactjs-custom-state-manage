@@ -4,7 +4,7 @@ import React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 import DocumentList from "../DocumentList";
-import {StoreProvider} from "../store/StoreContext";
+import {StoreProvider} from "../../StoreProvider/StoreContext";
 
 let container = null;
 beforeEach(() => {
